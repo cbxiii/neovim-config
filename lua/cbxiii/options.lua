@@ -4,7 +4,6 @@ opt.relativenumber = true
 opt.number = true
 
 vim.g.netrw_banner = 0
-vim.g.netrw_liststyle = 3
 
 opt.tabstop = 4
 opt.shiftwidth = 4
