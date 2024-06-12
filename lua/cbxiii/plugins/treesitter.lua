@@ -2,9 +2,6 @@ return {
     'nvim-treesitter/nvim-treesitter',
     event = { 'BufReadPre', 'BufNewFile' },
     build = ":TSUpdate",
-    dependencies = {
-        "windwp/nvim-ts-autotag",
-    },
     config = function()
         require('nvim-treesitter.configs').setup({
           -- A list of parser names, or "all" (the five listed parsers should always be installed)
@@ -28,10 +25,6 @@ return {
           },
 
           indent = { enable = true },
-
-          autotag = {
-            enable = true,
-          },
         })
     end
 }
