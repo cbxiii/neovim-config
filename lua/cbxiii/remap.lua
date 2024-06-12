@@ -4,6 +4,7 @@ local map = vim.keymap.set
 local options = { noremap = true }
 map("i", "jk", "<Esc>", options)
 map("n", "<leader>w", ":update<cr>", options) -- save file :3
+map("n", "<leader>q", ":close<cr>", options) -- close vim :3
 map("n", "<leader>n", ":nohl<cr>", options) -- clear highlight
 
 map("n", "<leader>pv", vim.cmd.Ex) -- goto file explorer

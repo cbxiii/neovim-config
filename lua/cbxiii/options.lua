@@ -33,7 +33,7 @@ opt.backspace = "indent,eol,start"
 opt.clipboard:append("unnamedplus")
 
 opt.splitright = true
-opt.splitbelow = true
+opt.splitbelow = false
 
 opt.scrolloff = 8
 opt.updatetime = 50
