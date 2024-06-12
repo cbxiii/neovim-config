@@ -22,17 +22,16 @@ map("n", "<C-u>", "<C-u>zz", options)
 map("n", "n", "nzzzv")
 map("n", "N", "Nzzzv")
 
-
 -- group & move tings up and down
 map("v", "J", ":m '>+1<cr>gv=gv")
 map("v", "K", ":m '<-2<cr>gv=gv")
 
--- tabs 
+-- tabs
 map("n", "<leader>t", "<cmd>tabnew<CR>") -- open new tab
 map("n", "<S-l>", "<cmd>tabn<CR>") --  go to next tab
 map("n", "<S-h>", "<cmd>tabp<CR>") --  go to previous tab
 map("n", "<C-t>", "<cmd>tabnew %<CR>") --  move current buffer to new tab
 
-map("x", "<leader>p", "\"_dP")
+map("x", "<leader>p", '"_dP')
 
-
+vim.keymap.set("n", "<leader>gc", ":Git commit<cr>")
