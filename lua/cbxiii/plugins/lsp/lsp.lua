@@ -38,6 +38,12 @@ return {
                         capabilities = capabilities
                     })
                 end,
+                ["html"] = function()
+                    lspconfig.html.setup({
+                        capabilities = capabilities,
+                        filetypes = { "html", "htmldjango" }
+                    })
+                end,
             })
 
             vim.keymap.set("n", "K", vim.lsp.buf.hover, {})

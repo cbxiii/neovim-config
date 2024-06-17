@@ -18,6 +18,7 @@ return {
                 diagnostic_config = { underline = false, virtual_text = false, signs = false },
                 method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
             }),
+            diagnostics.djlint,
         }
 
 		null_ls.setup({
