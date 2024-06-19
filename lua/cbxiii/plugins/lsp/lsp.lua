@@ -44,6 +44,12 @@ return {
                         filetypes = { "html", "htmldjango" }
                     })
                 end,
+                ["htmx"] = function()
+                    lspconfig.htmx.setup({
+                        capabilities = capabilities,
+                        filetypes = { "html", "htmldjango" }
+                    })
+                end,
             })
 
             vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
