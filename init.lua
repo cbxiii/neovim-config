@@ -71,6 +71,12 @@ map("n", "<leader>v", ":vsplit<cr>", options)
 map("n", "<leader>s", ":split<cr>", options)
 map("n", "<leader>x", "<cmd>close<cr>", options)
 
+-- tmux navigation 
+map("n", "<C-h>", "<cmd>TmuxNavigateLeft<CR>", { desc = "Move to left window/pane" })
+map("n", "<C-j>", "<cmd>TmuxNavigateDown<CR>", { desc = "Move to bottom window/pane" })
+map("n", "<C-k>", "<cmd>TmuxNavigateUp<CR>", { desc = "Move to top window/pane" })
+map("n", "<C-l>", "<cmd>TmuxNavigateRight<CR>", { desc = "Move to right window/pane" })
+
 -- paging up & down
 map("n", "<C-d>", "<C-d>zz", options)
 map("n", "<C-u>", "<C-u>zz", options)
@@ -90,7 +96,6 @@ map("n", "<S-h>", "<cmd>tabp<CR>") --  go to previous tab
 map("n", "<C-t>", "<cmd>tabnew %<CR>") --  move current buffer to new tab
 
 map("x", "<leader>p", '"_dP') -- paste without yanking
-map({ "n", "v" }, "<leader>x", '"_d', { desc = "Delete without yanking" })
 
 map("v", "<", "<gv", { desc = "indent left and reselect" })
 map("v", ">", ">gv", { desc = "indent right and reselect" })
@@ -173,11 +178,26 @@ vim.pack.add({
 	"https://github.com/L3MON4D3/LuaSnip",
     "https://github.com/mrcjkb/rustaceanvim",
     "https://www.github.com/echasnovski/mini.nvim",
+    {
+        src = "https://github.com/rose-pine/neovim",
+        name = "rose-pine",
+    },
+    "https://github.com/christoomey/vim-tmux-navigator",
 })
 
 -- ============================================
 -- PLUGIN CONFIGS
 -- ============================================
+
+-- color theme setup
+require("rose-pine").setup({
+    styles = {
+        bold = false,
+        italic = false,
+        transparency = true,
+    }
+})
+vim.cmd("colorscheme rose-pine")
 
 require("mini.icons").setup({})
 
@@ -189,6 +209,12 @@ end
 
 local dashboard = require("alpha.themes.dashboard")
 
+-- Change header color (e.g., make it match your theme's "Function" color, usually blue/green)
+dashboard.section.header.hl = "Function" 
+
+-- Change button shortcut letters color
+dashboard.section.buttons.hl = "Keyword"
+
 -- Your custom ASCII header using the [[ ]] block format
 dashboard.section.header.val = [[
                                     _            
@@ -197,6 +223,7 @@ dashboard.section.header.val = [[
  |_||_|   \___|   \___/   _\_/_   _|_|_  |_|_|_| 
 _|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""| 
 "`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-' 
+
 ]]
 
 -- Define your dashboard menu buttons
