@@ -153,6 +153,7 @@ vim.api.nvim_create_autocmd("FileType", {
 -- PLUGINS
 -- ===========================================
 vim.pack.add({
+    "https://github.com/goolord/alpha-nvim",
     "https://www.github.com/ibhagwan/fzf-lua",
     "https://www.github.com/lewis6991/gitsigns.nvim",
     "https://www.github.com/nvim-tree/nvim-tree.lua",
@@ -171,11 +172,44 @@ vim.pack.add({
 	},
 	"https://github.com/L3MON4D3/LuaSnip",
     "https://github.com/mrcjkb/rustaceanvim",
+    "https://www.github.com/echasnovski/mini.nvim",
 })
 
 -- ============================================
 -- PLUGIN CONFIGS
 -- ============================================
+
+require("mini.icons").setup({})
+
+-- Ensure the plugin is available before calling it
+local status_ok, alpha = pcall(require, "alpha")
+if not status_ok then
+    return
+end
+
+local dashboard = require("alpha.themes.dashboard")
+
+-- Your custom ASCII header using the [[ ]] block format
+dashboard.section.header.val = [[
+                                    _            
+  _ _      ___     ___    __ __    (_)    _ __   
+ | ' \    / -_)   / _ \   \ V /    | |   | '  \  
+ |_||_|   \___|   \___/   _\_/_   _|_|_  |_|_|_| 
+_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""| 
+"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-' 
+]]
+
+-- Define your dashboard menu buttons
+dashboard.section.buttons.val = {
+  dashboard.button("f", " " .. " Find file",       "<cmd> FzfLua files <cr>"),
+  dashboard.button("n", " " .. " New file",        "<cmd> ene <BAR> startinsert <cr>"),
+  dashboard.button("p", " "  .. " File Tree",      "<cmd> Ex<cr>"),
+  dashboard.button("g", " " .. " Find text",       "<cmd> FzfLua live_grep <cr>"),
+  dashboard.button("q", " " .. " Quit",            "<cmd> qa <cr>"),
+}
+
+-- Apply the configuration
+alpha.setup(dashboard.config)
 
 local setup_treesitter = function()
     local treesitter = require("nvim-treesitter")
