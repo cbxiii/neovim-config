@@ -29,6 +29,8 @@ opt.smartcase = true -- case sensitive if uppercase in string
 
 opt.cursorline = true -- highlight current line
 
+opt.selection = "inclusive" -- include last char in selection
+
 opt.hlsearch = true
 opt.incsearch = true
 
@@ -51,6 +53,7 @@ opt.autowrite = false -- don't autosave
 opt.encoding = "UTF-8"
 
 opt.colorcolumn = "100"
+
 
 -- ==================
 -- KEYMAPS
@@ -190,14 +193,14 @@ vim.pack.add({
 -- ============================================
 
 -- color theme setup
-require("rose-pine").setup({
-    styles = {
-        bold = false,
-        italic = false,
-        transparency = true,
-    }
-})
-vim.cmd("colorscheme rose-pine")
+-- require("rose-pine").setup({
+--     styles = {
+--         bold = false,
+--         italic = false,
+--         transparency = true,
+--     }
+-- })
+-- vim.cmd("colorscheme rose-pine")
 
 require("mini.icons").setup({})
 
@@ -544,3 +547,90 @@ vim.lsp.enable({
 	"clangd",
 	"efm",
 })
+
+-- =========================== STATUS LINE ===========================
+opt.showmode = false -- hide default -- INSERT -- text at the bottom
+opt.laststatus = 3 -- global statusline
+
+local modes = {
+  ['n']   = '',
+  ['no']  = '-- N-PENDING --',
+  ['v']   = '-- VISUAL --',
+  ['V']   = '-- V-LINE --',
+  ['\22'] = '-- V-BLOCK --',
+  ['s']   = '-- SELECT --',
+  ['S']   = '-- S-LINE --',
+  ['\19'] = '-- S-BLOCK --',
+  ['i']   = '-- INSERT --',
+  ['R']   = '-- REPLACE --',
+  ['c']   = '-- COMMAND --',
+  ['r']   = '-- PROMPT --',
+  ['!']   = '-- SHELL --',
+  ['t']   = '-- TERMINAL --',
+}
+
+local function get_mode()
+    local current_mode = vim.api.nvim_get_mode().mode
+    return string.format(" %s ", modes[current_mode] or current_mode)
+end
+
+-- get git branch from gitsigns
+local function get_git_branch()
+    -- check if gitsigns data is available for current buffer
+    local b = vim.b.gitsigns_status_dict
+    if not b or not b.head or b.head == "" then
+        return ""
+    end
+    return string.format("  %s ", b.head)
+end
+
+-- get relative file path and modification status
+local function get_filepath()
+    return " %f%m "
+end
+
+-- lsp diagnostics count
+local function get_diagnostics()
+    if #vim.lsp.get_clients({ bufnr = 0 }) == 0 then
+        return ""
+    end
+
+    local count = vim.diagnostic.count(0)
+    local errors = count[vim.diagnostic.severity.ERROR] or 0
+    local warnings = count[vim.diagnostic.severity.WARN] or 0
+    local hints = count[vim.diagnostic.severity.HINT] or 0 
+
+    local result = ""
+    if errors > 0 then
+        result = result .. string.format(" %s:%d", diagnostic_signs.Error, errors)
+    end
+    if warnings > 0 then
+        result = result .. string.format(" %s:%d", diagnostic_signs.Warn, warnings)
+    end
+    if hints > 0 then
+        result = result .. string.format(" %s:%d", diagnostic_signs.Hint, hints)
+    end
+
+    return result ~= "" and result .. " " or ""
+end
+
+-- 5. Get file percentage and cursor line/col location
+local function get_location()
+  -- %l = line, %c = column, %p%% = file percentage
+  return " %l,%c   %p%% "
+end
+
+-- final statusline
+function MyStatusLine()
+    local parts = {
+        get_git_branch(),
+        get_filepath(),
+        get_mode(),
+        "%=",
+        get_diagnostics(),
+        get_location()
+    }
+    return table.concat(parts)
+end
+
+opt.statusline = "%{%v:lua.MyStatusLine()%}"
