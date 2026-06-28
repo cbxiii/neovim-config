@@ -1,7 +1,7 @@
 local opt = vim.opt
 
 opt.termguicolors = true
-vim.cmd.colorscheme("habamax")
+-- vim.cmd.colorscheme("habamax")
 
 -- ==================
 -- OPTIONS
@@ -65,7 +65,7 @@ local options = { noremap = true }
 map("i", "jk", "<Esc>", options)
 map("n", "<leader>w", ":update<cr>", options) -- save file :3
 map("n", "<leader>q", ":q<cr>", options) -- close vim :3
-map("n", "<leader>n", ":nohl<cr>", options) -- clear highlight
+map("n", "<C-n>", ":nohl<cr>", options) -- clear highlight
 
 map("n", "<leader>pv", vim.cmd.Ex) -- goto file explorer
 
@@ -181,11 +181,9 @@ vim.pack.add({
 	"https://github.com/L3MON4D3/LuaSnip",
     "https://github.com/mrcjkb/rustaceanvim",
     "https://www.github.com/echasnovski/mini.nvim",
-    {
-        src = "https://github.com/rose-pine/neovim",
-        name = "rose-pine",
-    },
+    "https://www.github.com/ellisonleao/gruvbox.nvim",
     "https://github.com/christoomey/vim-tmux-navigator",
+    "https://github.com/nvim-tree/nvim-web-devicons",
 })
 
 -- ============================================
@@ -193,53 +191,50 @@ vim.pack.add({
 -- ============================================
 
 -- color theme setup
--- require("rose-pine").setup({
---     styles = {
---         bold = false,
---         italic = false,
---         transparency = true,
---     }
--- })
--- vim.cmd("colorscheme rose-pine")
+local colors = require("gruvbox").palette
+require("gruvbox").setup({
+    overrides = {
+	    AlphaShortcut = { fg = colors.bright_red },
+	    AlphaButtons = { fg = colors.bright_red },
+	    AlphaHeader = { fg = colors.bright_yellow },
+    },
+})
+vim.cmd.colorscheme("gruvbox")
 
 require("mini.icons").setup({})
 
--- Ensure the plugin is available before calling it
-local status_ok, alpha = pcall(require, "alpha")
-if not status_ok then
-    return
-end
+-- alpha setup 
+vim.cmd("packadd nvim-web-devicons")
 
 local dashboard = require("alpha.themes.dashboard")
 
--- Change header color (e.g., make it match your theme's "Function" color, usually blue/green)
-dashboard.section.header.hl = "Function" 
-
--- Change button shortcut letters color
-dashboard.section.buttons.hl = "Keyword"
-
--- Your custom ASCII header using the [[ ]] block format
-dashboard.section.header.val = [[
-                                    _            
-  _ _      ___     ___    __ __    (_)    _ __   
- | ' \    / -_)   / _ \   \ V /    | |   | '  \  
- |_||_|   \___|   \___/   _\_/_   _|_|_  |_|_|_| 
-_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""| 
-"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-' 
-
-]]
+dashboard.section.header.val = {
+    [[                                    _             ]],
+    [[  _ _      ___     ___    __ __    (_)    _ __   ]],
+    [[ | ' \    / -_)   / _ \   \ V /    | |   | '  \  ]],
+    [[ |_||_|   \___|   \___/   _\_/_   _|_|_  |_|_|_| ]],
+    [[_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|]],
+    [["`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-']],
+}
 
 -- Define your dashboard menu buttons
 dashboard.section.buttons.val = {
-  dashboard.button("f", " " .. " Find file",       "<cmd> FzfLua files <cr>"),
-  dashboard.button("n", " " .. " New file",        "<cmd> ene <BAR> startinsert <cr>"),
-  dashboard.button("p", " "  .. " File Tree",      "<cmd> Ex<cr>"),
-  dashboard.button("g", " " .. " Find text",       "<cmd> FzfLua live_grep <cr>"),
-  dashboard.button("q", " " .. " Quit",            "<cmd> qa <cr>"),
+    dashboard.button("f", " " .. " Find file",       "<cmd> FzfLua files <cr>"),
+    dashboard.button("n", " " .. " New file",        "<cmd> ene <BAR> startinsert <cr>"),
+    dashboard.button("p", " "  .. " File Tree",      "<cmd> Ex<cr>"),
+    dashboard.button("g", " " .. " Find text",       "<cmd> FzfLua live_grep <cr>"),
+    dashboard.button("q", " " .. " Quit",            "<cmd> qa <cr>"),
 }
 
--- Apply the configuration
-alpha.setup(dashboard.config)
+for _, button in ipairs(dashboard.section.buttons.val) do
+    button.opts.hl = "AlphaButtons"
+    button.opts.hl_shortcut = "AlphaShortcut"
+end
+dashboard.section.header.opts.hl = "AlphaHeader"
+dashboard.section.footer.opts.hl = "AlphaFooter"
+dashboard.opts.layout[1].val = 8
+
+require("alpha").setup(dashboard.opts)
 
 local setup_treesitter = function()
     local treesitter = require("nvim-treesitter")
@@ -352,7 +347,7 @@ local function lsp_on_attach(ev)
 	local opts = { noremap = true, silent = true, buffer = bufnr }
 
 	vim.keymap.set("n", "<leader>gd", function()
-		require("fzf-lua").lsp_definitions({ jump_to_single_result = true })
+		require("fzf-lua").lsp_definitions({ jump1 = true })
 	end, opts)
 
 	vim.keymap.set("n", "<leader>gD", vim.lsp.buf.definition, opts)
