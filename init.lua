@@ -256,15 +256,33 @@ end
 
 setup_treesitter()
 
+-- nvim-tree setup
 require("nvim-tree").setup({
     view = {
         width = 35,
     },
     filters = {
-        dotfiles = false,
+        dotfiles = true,
     },
     renderer = {
         group_empty = true,
+        icons = {
+            glyphs = {
+                folder = {
+                    arrow_closed = "⏵",
+                    arrow_open = "⏷",
+                },
+                git = {
+                    unstaged = "✗",
+                    staged = "✓",
+                    unmerged = "⌥",
+                    renamed = "➜",
+                    untracked = "★",
+                    deleted = "⊖",
+                    ignored = "◌",
+                },
+            },
+        },
     },
 })
 vim.keymap.set("n", "<leader>e", function()
