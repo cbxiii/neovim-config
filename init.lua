@@ -110,6 +110,11 @@ end, { desc = "toggle diagnostics" })
 -- git binds
 map("n", "<leader>gc", ":Git commit<cr>")
 
+-- format file
+map("n", "<leader>of", function()
+    vim.lsp.buf.format({ async = true })
+end, { desc = "Format buffer" })
+
 -- ==============
 -- AUTOCMDS
 -- ===============
@@ -154,6 +159,17 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.opt_local.wrap = true
         vim.opt_local.linebreak = true
         vim.opt_local.spell = true
+    end,
+})
+
+-- Set 2-space indentation for HTML, JS, and TS files
+vim.api.nvim_create_autocmd("FileType", {
+    group = augroup,
+    pattern = { "html", "javascript", "typescript", "javascriptreact", "typescriptreact" },
+    callback = function()
+        vim.opt_local.tabstop = 2
+        vim.opt_local.shiftwidth = 2
+        vim.opt_local.softtabstop = 2
     end,
 })
 
